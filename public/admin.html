@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Apex Motors</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #c1121f;
+            --crimson: #9d0208;
+            --rich-black: #0a0a0a;
+            --jet-black: #141414;
+            --charcoal: #1a1a1a;
+            --light-gray: #888888;
+            --off-white: #f5f5f5;
+            --pure-white: #ffffff;
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--rich-black);
+            color: var(--off-white);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--rich-black) 0%, var(--jet-black) 100%);
+        }
+
+        .login-box {
+            background: var(--charcoal);
+            padding: 50px;
+            border-radius: 15px;
+            border: 2px solid var(--primary-red);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(230, 57, 70, 0.3);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-logo i {
+            font-size: 4rem;
+            color: var(--primary-red);
+        }
+
+        .login-logo h1 {
+            color: var(--pure-white);
+            margin-top: 15px;
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--jet-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--pure-white);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px rgba(230, 57, 70, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-red);
+            color: var(--pure-white);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--dark-red);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(230, 57, 70, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--jet-black);
+            border-right: 1px solid rgba(230, 57, 70, 0.2);
+            padding: 30px 0;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 30px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--pure-white);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .sidebar-logo i {
+            color: var(--primary-red);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            color: var(--light-gray);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--primary-red);
+        }
+
+        .nav-link i {
+            width: 25px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--pure-white);
+        }
+
+        .user-details h4 {
+            color: var(--pure-white);
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .user-details span {
+            color: var(--light-gray);
+            font-size: 0.8rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--primary-red);
+            color: var(--primary-red);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-red);
+            color: var(--pure-white);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            color: var(--pure-white);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--light-gray);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--charcoal);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(230, 57, 70, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .stat-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .stat-card.primary .icon {
+            background: rgba(230, 57, 70, 0.2);
+            color: var(--primary-red);
+        }
+
+        .stat-card.success .icon {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .stat-card.warning .icon {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .stat-card.info .icon {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .stat-card h3 {
+            color: var(--pure-white);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--charcoal);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            color: var(--pure-white);
+            font-size: 1.3rem;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--jet-black);
+        }
+
+        th {
+            padding: 20px 30px;
+            text-align: left;
+            color: var(--light-gray);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        td {
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--off-white);
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .status-contacted {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .status-resolved {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(230, 57, 70, 0.2);
+            color: var(--primary-red);
+        }
+
+        .status-confirmed {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn.view {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .action-btn.edit {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--light-gray);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--charcoal);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--charcoal);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(230, 57, 70, 0.3);
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: var(--pure-white);
+        }
+
+        .modal-close {
+            font-size: 2rem;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-red);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn-secondary {
+            background: var(--charcoal);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: auto;
+            padding: 12px 30px;
+        }
+
+        /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--jet-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--pure-white);
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--jet-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--pure-white);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            th, td {
+                padding: 15px 20px;
+                white-space: nowrap;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(230, 57, 70, 0.3);
+            border-top-color: var(--primary-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-crown"></i>
+                <h1>APEX ADMIN</h1>
+            </div>
+            <div class="error-message" id="loginError">
+                <i class="fas fa-exclamation-circle"></i>
+                <span></span>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn" id="loginBtn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-crown"></i>
+                    <span>APEX</span>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" data-page="overview">
+                        <i class="fas fa-home"></i>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="contacts">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contacts</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="testdrives">
+                        <i class="fas fa-calendar"></i>
+                        <span>Test Drives</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="cars">
+                        <i class="fas fa-car"></i>
+                        <span>Cars</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-page="gallery">
+                        <i class="fas fa-images"></i>
+                        <span>Gallery</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <h4 id="userName">Admin</h4>
+                        <span id="userRole">Administrator</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <div class="content-section active" id="overview">
+                <div class="page-header">
+                    <h1>Dashboard Overview</h1>
+                    <p>Welcome back to Apex Motors Admin Panel</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 id="totalContacts">0</h3>
+                        <p>Total Contacts</p>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 id="pendingTestDrives">0</h3>
+                        <p>Pending Test Drives</p>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h3 id="totalCars">0</h3>
+                        <p>Active Cars</p>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 id="newContacts">0</h3>
+                        <p>New Inquiries</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+                    </div>
+                    <div id="recentActivity">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contacts Section -->
+            <div class="content-section" id="contacts">
+                <div class="page-header">
+                    <h1>Contact Submissions</h1>
+                    <p>Manage customer inquiries</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>All Contacts</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-small" onclick="exportData('contacts')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div id="contactsTableContainer">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Drives Section -->
+            <div class="content-section" id="testdrives">
+                <div class="page-header">
+                    <h1>Test Drive Bookings</h1>
+                    <p>Manage test drive appointments</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>All Bookings</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-small" onclick="exportData('test-drives')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div id="testDrivesTableContainer">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cars Section -->
+            <div class="content-section" id="cars">
+                <div class="page-header">
+                    <h1>Car Models</h1>
+                    <p>Manage vehicle inventory</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>All Cars</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-small btn-success" onclick="openAddCarModal()">
+                                <i class="fas fa-plus"></i> Add Car
+                            </button>
+                        </div>
+                    </div>
+                    <div id="carsTableContainer">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Section -->
+            <div class="content-section" id="gallery">
+                <div class="page-header">
+                    <h1>Gallery Management</h1>
+                    <p>Manage website gallery images</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Gallery Images</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-small btn-success" onclick="openAddImageModal()">
+                                <i class="fas fa-plus"></i> Add Image
+                            </button>
+                        </div>
+                    </div>
+                    <div id="galleryTableContainer">
+                        <div class="empty-state">
+                            <i class="fas fa-images"></i>
+                            <p>Gallery management coming soon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="actionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Modal Title</h2>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn" id="modalActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_URL = window.location.origin;
+        let authToken = localStorage.getItem('apex_token');
+        let currentUser = JSON.parse(localStorage.getItem('apex_user') || '{}');
+
+        // Check authentication on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (authToken) {
+                showDashboard();
+                loadDashboardData();
+            } else {
+                showLogin();
+            }
+        });
+
+        // ==================== AUTH FUNCTIONS ====================
+
+        function showLogin() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboard').classList.remove('active');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.username || 'Admin';
+            document.getElementById('userAvatar').textContent = (currentUser.username || 'A').charAt(0).toUpperCase();
+            document.getElementById('userRole').textContent = currentUser.role || 'Administrator';
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing in...';
+            errorDiv.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_URL}/api/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('apex_token', authToken);
+                    localStorage.setItem('apex_user', JSON.stringify(currentUser));
+                    showDashboard();
+                    loadDashboardData();
+                } else {
+                    errorDiv.querySelector('span').textContent = data.error || 'Login failed';
+                    errorDiv.classList.add('show');
+                }
+            } catch (error) {
+                errorDiv.querySelector('span').textContent = 'Network error. Please try again.';
+                errorDiv.classList.add('show');
+            }
+
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Sign In';
+        });
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            authToken = null;
+            currentUser = {};
+            localStorage.removeItem('apex_token');
+            localStorage.removeItem('apex_user');
+            showLogin();
+        });
+
+        // ==================== NAVIGATION ====================
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const page = link.dataset.page;
+
+                // Update active nav
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                // Show section
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(page).classList.add('active');
+
+                // Load data for section
+                if (page === 'contacts') loadContacts();
+                if (page === 'testdrives') loadTestDrives();
+                if (page === 'cars') loadCars();
+            });
+        });
+
+        // ==================== API FUNCTIONS ====================
+
+        async function apiRequest(endpoint, options = {}) {
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+
+            if (response.status === 401) {
+                // Token expired
+                localStorage.removeItem('apex_token');
+                showLogin();
+                return null;
+            }
+
+            return response.json();
+        }
+
+        // ==================== DASHBOARD DATA ====================
+
+        async function loadDashboardData() {
+            const stats = await apiRequest('/api/admin/stats');
+            if (stats) {
+                document.getElementById('totalContacts').textContent = stats.totalContacts || 0;
+                document.getElementById('pendingTestDrives').textContent = stats.pendingTestDrives || 0;
+                document.getElementById('totalCars').textContent = stats.totalCars || 0;
+                document.getElementById('newContacts').textContent = stats.newContacts || 0;
+            }
+        }
+
+        // ==================== CONTACTS ====================
+
+        async function loadContacts() {
+            const container = document.getElementById('contactsTableContainer');
+            container.innerHTML = '<div class="spinner"></div>';
+
+            const data = await apiRequest('/api/admin/contacts');
+
+            if (!data || !data.contacts) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load contacts</p></div>';
+                return;
+            }
+
+            if (data.contacts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>No contacts yet</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Model Interest</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.contacts.map(contact => `
+                            <tr>
+                                <td>${contact.name}</td>
+                                <td>${contact.email}</td>
+                                <td>${contact.model_interest || 'N/A'}</td>
+                                <td>${new Date(contact.created_at).toLocaleDateString()}</td>
+                                <td><span class="status-badge status-${contact.status}">${contact.status}</span></td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="action-btn view" onclick="viewContact(${contact.id})" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn edit" onclick="editContactStatus(${contact.id}, '${contact.status}')" title="Change Status"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ==================== TEST DRIVES ====================
+
+        async function loadTestDrives() {
+            const container = document.getElementById('testDrivesTableContainer');
+            container.innerHTML = '<div class="spinner"></div>';
+
+            const data = await apiRequest('/api/admin/test-drives');
+
+            if (!data || !data.testDrives) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load bookings</p></div>';
+                return;
+            }
+
+            if (data.testDrives.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i><p>No test drive bookings yet</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Name</th>
+                            <th>Model</th>
+                            <th>Preferred Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.testDrives.map(booking => `
+                            <tr>
+                                <td><strong>APEX-TD-${booking.id.toString().padStart(6, '0')}</strong></td>
+                                <td>${booking.name}</td>
+                                <td>${booking.model}</td>
+                                <td>${new Date(booking.preferred_date).toLocaleDateString()}</td>
+                                <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="action-btn view" onclick="viewBooking(${booking.id})" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn edit" onclick="editBookingStatus(${booking.id}, '${booking.status}')" title="Change Status"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete" onclick="deleteBooking(${booking.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ==================== CARS ====================
+
+        async function loadCars() {
+            const container = document.getElementById('carsTableContainer');
+            container.innerHTML = '<div class="spinner"></div>';
+
+            const data = await apiRequest('/api/cars');
+
+            if (!data || !data.cars) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load cars</p></div>';
+                return;
+            }
+
+            if (data.cars.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-car"></i><p>No cars in inventory</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Horsepower</th>
+                            <th>0-60 mph</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.cars.map(car => `
+                            <tr>
+                                <td><img src="${car.image_url}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 6px;"></td>
+                                <td><strong>${car.name}</strong><br><small style="color: #888;">${car.tagline}</small></td>
+                                <td>$${car.price?.toLocaleString()}</td>
+                                <td>${car.horsepower} HP</td>
+                                <td>${car.acceleration}s</td>
+                                <td>${car.featured ? '<span class="status-badge status-confirmed">Featured</span>' : '<span class="status-badge status-new">Active</span>'}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="action-btn edit" onclick="editCar(${car.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete" onclick="deleteCar(${car.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ==================== MODAL ACTIONS ====================
+
+        function openModal(title, content, actionText, actionCallback) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = content;
+            const actionBtn = document.getElementById('modalActionBtn');
+            actionBtn.textContent = actionText;
+            actionBtn.onclick = actionCallback;
+            document.getElementById('actionModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('actionModal').classList.remove('active');
+        }
+
+        // ==================== CONTACT ACTIONS ====================
+
+        function viewContact(id) {
+            // Load contact details and show in modal
+            apiRequest('/api/admin/contacts').then(data => {
+                const contact = data.contacts.find(c => c.id === id);
+                if (contact) {
+                    const content = `
+                        <p><strong>Name:</strong> ${contact.name}</p>
+                        <p><strong>Email:</strong> ${contact.email}</p>
+                        <p><strong>Phone:</strong> ${contact.phone || 'N/A'}</p>
+                        <p><strong>Model Interest:</strong> ${contact.model_interest || 'N/A'}</p>
+                        <p><strong>Message:</strong></p>
+                        <p>${contact.message || 'No message'}</p>
+                        <p><strong>Submitted:</strong> ${new Date(contact.created_at).toLocaleString()}</p>
+                    `;
+                    openModal('Contact Details', content, 'Close', closeModal);
+                }
+            });
+        }
+
+        function editContactStatus(id, currentStatus) {
+            const content = `
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="newStatus">
+                        <option value="new" ${currentStatus === 'new' ? 'selected' : ''}>New</option>
+                        <option value="contacted" ${currentStatus === 'contacted' ? 'selected' : ''}>Contacted</option>
+                        <option value="resolved" ${currentStatus === 'resolved' ? 'selected' : ''}>Resolved</option>
+                    </select>
+                </div>
+            `;
+            openModal('Update Contact Status', content, 'Update', async () => {
+                const newStatus = document.getElementById('newStatus').value;
+                await apiRequest(`/api/admin/contacts/${id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ status: newStatus })
+                });
+                closeModal();
+                loadContacts();
+            });
+        }
+
+        // ==================== BOOKING ACTIONS ====================
+
+        function viewBooking(id) {
+            apiRequest('/api/admin/test-drives').then(data => {
+                const booking = data.testDrives.find(b => b.id === id);
+                if (booking) {
+                    const content = `
+                        <p><strong>Reference:</strong> APEX-TD-${booking.id.toString().padStart(6, '0')}</p>
+                        <p><strong>Name:</strong> ${booking.name}</p>
+                        <p><strong>Email:</strong> ${booking.email}</p>
+                        <p><strong>Phone:</strong> ${booking.phone}</p>
+                        <p><strong>Model:</strong> ${booking.model}</p>
+                        <p><strong>Preferred Date:</strong> ${new Date(booking.preferred_date).toLocaleDateString()}</p>
+                        <p><strong>Preferred Time:</strong> ${booking.preferred_time || 'Any'}</p>
+                        <p><strong>Notes:</strong> ${booking.notes || 'No notes'}</p>
+                    `;
+                    openModal('Booking Details', content, 'Close', closeModal);
+                }
+            });
+        }
+
+        function editBookingStatus(id, currentStatus) {
+            const content = `
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="newStatus">
+                        <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="confirmed" ${currentStatus === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>Completed</option>
+                        <option value="cancelled" ${currentStatus === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                </div>
+            `;
+            openModal('Update Booking Status', content, 'Update', async () => {
+                const newStatus = document.getElementById('newStatus').value;
+                await apiRequest(`/api/admin/test-drives/${id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ status: newStatus })
+                });
+                closeModal();
+                loadTestDrives();
+            });
+        }
+
+        function deleteBooking(id) {
+            const content = `<p style="color: #ef4444;">Are you sure you want to delete this booking? This action cannot be undone.</p>
+            `;
+            openModal('Confirm Delete', content, 'Delete', async () => {
+                await apiRequest(`/api/admin/test-drives/${id}`, {
+                    method: 'DELETE'
+                });
+                closeModal();
+                loadTestDrives();
+                loadDashboardData();
+            });
+        }
+
+        // ==================== CAR ACTIONS ====================
+
+        function openAddCarModal() {
+            const content = `
+                <div class="form-group">
+                    <label>Car Name *</label>
+                    <input type="text" id="carName" required>
+                </div>
+                <div class="form-group">
+                    <label>Tagline</label>
+                    <input type="text" id="carTagline">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="carDescription"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price ($) *</label>
+                        <input type="number" id="carPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Horsepower</label>
+                        <input type="number" id="carHp">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>0-60 mph (seconds)</label>
+                        <input type="number" step="0.1" id="carAccel">
+                    </div>
+                    <div class="form-group">
+                        <label>Top Speed (mph)</label>
+                        <input type="number" id="carSpeed">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" id="carImage">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="carFeatured"> Featured Model
+                    </label>
+                </div>
+            `;
+            openModal('Add New Car', content, 'Add Car', async () => {
+                const carData = {
+                    name: document.getElementById('carName').value,
+                    tagline: document.getElementById('carTagline').value,
+                    description: document.getElementById('carDescription').value,
+                    price: parseInt(document.getElementById('carPrice').value),
+                    horsepower: parseInt(document.getElementById('carHp').value) || 0,
+                    acceleration: parseFloat(document.getElementById('carAccel').value) || 0,
+                    top_speed: parseInt(document.getElementById('carSpeed').value) || 0,
+                    image_url: document.getElementById('carImage').value,
+                    featured: document.getElementById('carFeatured').checked ? 1 : 0
+                };
+
+                await apiRequest('/api/admin/cars', {
+                    method: 'POST',
+                    body: JSON.stringify(carData)
+                });
+                closeModal();
+                loadCars();
+                loadDashboardData();
+            });
+        }
+
+        function editCar(id) {
+            apiRequest('/api/cars').then(data => {
+                const car = data.cars.find(c => c.id === id);
+                if (!car) return;
+
+                const content = `
+                    <div class="form-group">
+                        <label>Car Name</label>
+                        <input type="text" id="editCarName" value="${car.name}">
+                    </div>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="editCarPrice" value="${car.price}">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="editCarFeatured" ${car.featured ? 'checked' : ''}> Featured Model
+                        </label>
+                    </div>
+                `;
+                openModal('Edit Car', content, 'Save Changes', async () => {
+                    const updates = {
+                        name: document.getElementById('editCarName').value,
+                        price: parseInt(document.getElementById('editCarPrice').value),
+                        featured: document.getElementById('editCarFeatured').checked ? 1 : 0
+                    };
+
+                    await apiRequest(`/api/admin/cars/${id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify(updates)
+                    });
+                    closeModal();
+                    loadCars();
+                });
+            });
+        }
+
+        function deleteCar(id) {
+            const content = `<p style="color: #ef4444;">Are you sure you want to delete this car? This action cannot be undone.</p>
+            `;
+            openModal('Confirm Delete', content, 'Delete', async () => {
+                await apiRequest(`/api/admin/cars/${id}`, {
+                    method: 'DELETE'
+                });
+                closeModal();
+                loadCars();
+                loadDashboardData();
+            });
+        }
+
+        function openAddImageModal() {
+            alert('Gallery management coming soon!');
+        }
+
+        function exportData(type) {
+            alert(`Export ${type} feature coming soon!`);
+        }
+    </script>
+</body>
+</html>
